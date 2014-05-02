@@ -17,7 +17,6 @@ public class Queue {
 			return data;
 		}
 	}
-
 	public Queue(){
 		first = null;
 		last = null;

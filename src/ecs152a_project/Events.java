@@ -8,14 +8,7 @@ public class Events {
 	Events(){
 		type = null;
 		eventTime = -1;
-	}
-	Events(String inType){
-		type = inType;
-		eventTime = -1;
-	}
-	Events(int inTime){
-		type = null;
-		eventTime = inTime;
+		packetSize = 0;
 	}
 	Events(String inType, int inTime, int inSize){
 		type = inType;
