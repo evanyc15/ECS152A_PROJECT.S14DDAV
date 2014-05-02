@@ -10,8 +10,8 @@ public class GEL {
 	GEL(){
 		GelList = new LinkedList<Events>();
 	}
-	public boolean insert(Events event,int index){
-		
+	public void insert(Events event,int index){
+		GelList.add(index,event);
 	}
 	public Events removeFirst(){
 		Events firstEvent;
