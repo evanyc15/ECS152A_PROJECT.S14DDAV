@@ -18,10 +18,16 @@ public class Controller {
 		//output-statistics; 
 		
 	} // end main 
-	public static double neg_expo_distr_time(double rate) { 
+	/*public static double neg_expo_distr_time(double rate) { 
 		double u; 
 		u = Math.random() * 50 + 1; //Placeholder for now
 		return ((-1/rate)*Math.log(1-u)); 
-	} 
+	} */
+	 public static double negative_exponenetially_distributed_time(double rate) 
+	    {
+		 double u;
+	     u = Math.random()*1+0;
+	     return ((-1/rate)*Math.log(1-u));
+	    }
 
 }
