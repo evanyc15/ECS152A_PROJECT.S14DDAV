@@ -6,55 +6,61 @@ import java.util.LinkedList;
 public class Controller {
 	public static void main( String[] args ){
 		double currentTime = 0;
-		double lambda[] = {0.1,0.25,0.4,0.55,0.65,0.80,0.90};
+		double lambda1[] = {0.1,0.25,0.4,0.55,0.65,0.80,0.90};
+		double lambda2[] = {0.2,0.4,0.6,0.8,0.9};
 		double mu = 1.0;
 		double nextArrivTime;
 		double serviceTime;
+		int queueSize = 0;	//This is the 'length' in the instructions
+		int[] MAXBUFFER = {-1,1,20,50}; //-1 means infinite
 		GEL eventList = new GEL();
-		Queue<Node> packetQueue = new LinkedList<Node>();
+		Queue<Node> packetQueue = new LinkedList<Node>(); //Queue represents the packets, every time we have a new packet, we insert into Queue
 		Statistics stats = new Statistics();
 		
-		/*currentTime = currentTime + negative_exponentially_distributed_time(lambda[0]);
-		Events event1 = new Events("arrival",1,currentTime,1);
-		currentTime = currentTime + negative_exponentially_distributed_time(lambda[0]);
-		Events event2 = new Events("arrival",2,currentTime,1);
-		currentTime = currentTime + negative_exponentially_distributed_time(lambda[0]);
-		Events event3 = new Events("arrival",3,currentTime,1);*/
-		
-		/*eventList.insert(event1);
-		eventList.insert(event2);
-		eventList.insert(event3);*/
-		
-		currentTime = currentTime + negative_exponentially_distributed_time(lambda[0]);
+		currentTime = currentTime + negative_exponentially_distributed_time(lambda1[0]);
 		Events FirstEvent = new Events("arrival",0,currentTime);
 		eventList.insert(FirstEvent);
 		for (int i = 1; i < 25; i++){ 
 			Events currentEvent = eventList.getNode(i);
-			currentTime = currentEvent.getTime();
+			
+			//Processing Events
+			//Arrival Event
 			if(currentEvent.getType() == "arrival"){
-				
 				//Creating next arrival event
-				nextArrivTime = currentTime + negative_exponentially_distributed_time(lambda[0]);
-				Events event = new Events("arrival",i,nextArrivTime);
-				eventList.insert(event);
+				currentTime = currentEvent.getTime();
+				nextArrivTime = currentTime + negative_exponentially_distributed_time(lambda1[0]);
 				
 				//Create new packet (insert in queue)
-				serviceTime = negative_exponentially_distributed_time(mu);
-				packetQueue.addLast(new Node(i,serviceTime));
+				Node packet = new Node(i,negative_exponentially_distributed_time(mu));
+				
+				Events arrEvent = new Events("arrival",i,nextArrivTime);
+				eventList.insert(arrEvent);
+				
+				//Processing Arrival Event
+				if(queueSize == 0){
+					Events depEvent = new Events("departure",i,currentTime + packet.getPacketSize());
+					eventList.insert(depEvent);
+				}
+				else if(queueSize > 0){
+					if(queueSize - 1 < MAXBUFFER[0]){ //MAXBUFFER INDEX SHOULD BE SET DEPENDING ON FOR LOOP
+						packetQueue.add(packet);
+					}
+					else{
+						//DROP PACKET HERE
+					}
+					queueSize++; //NOT SURE IF THIS IS HERE OR IN THE ABOVE IF
+				}
 			}
+			//Departure Events
 			else if(currentEvent.getType() == "departure"){
-				if(packetQueue.getNumElem() == 0){
-					
-				}
-				else if(packetQueue.getNumElem() > 0){
-					
+				currentTime = currentEvent.getTime();
+				queueSize--;
+				if(queueSize > 0){
+					Node temp = packetQueue.remove();
+					Events depEvent = new Events("departure",temp.getPacketNum(),currentTime + temp.getPacketSize());
+					eventList.insert(depEvent);
 				}
 			}
-			/*
-			currentTime = currentTime + negative_exponentially_distributed_time(lambda[0]);
-			Events event = new Events("arrival",0,currentTime,1/*placeholder for now*///);
-			//eventList.insert(event);
-			
 			
 		} 
 		eventList.printGel();
