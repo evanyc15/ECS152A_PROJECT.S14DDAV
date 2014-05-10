@@ -1,5 +1,8 @@
 package ecs152a_project;
 
+import java.util.Collections;
+import java.util.Comparator;
+
 public class Events {
 	private String type;
 	private int eventNumber;
@@ -30,4 +33,15 @@ public class Events {
 	public int getSize(){
 		return packetSize;
 	}
+}
+
+class EventsComp implements Comparator<Events>{
+    @Override
+    public int compare(Events e1, Events e2) {
+        if(e1.getTime() > e2.getTime()){
+            return 1;
+        } else {
+            return -1;
+        }
+    }
 }
