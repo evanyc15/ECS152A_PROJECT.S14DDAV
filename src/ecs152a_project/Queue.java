@@ -6,16 +6,16 @@ public class Queue {
 	private int numElem;
 
 	protected class Node{
-		protected int packetSize;
 		protected int packetNum;
+		protected double packetSize;
 		protected Node next;
 
-		public Node(int inNum,int inData){
+		public Node(int inNum,double inData){
 			packetNum = inNum;
 			packetSize = inData;
 			next = null;
 		}
-		public int getPacketSize(){
+		public double getPacketSize(){
 			return packetSize;
 		}
 		public int getPacketNum(){
@@ -36,10 +36,10 @@ public class Queue {
 	public int getNumElem(){
 		return numElem;
 	}
-	public void enqueue(Events inData){
+	public void enqueue(int inNum, double inData){
 		Node oldNode = last;
 
-		last = new Node(inData);
+		last = new Node(inNum, inData);
 		last.next = null;
 		if(isEmpty()) first = last;
 		else{
@@ -62,7 +62,7 @@ public class Queue {
 		else{
 			Node reference = first;
 			for(int i = 0; i < numElem; i++){
-				System.out.print(reference.data+"| ");
+				System.out.print("Number"+reference.packetNum +": "+reference.packetSize+"| ");
 				reference = reference.next;
 			}
 			System.out.println("");

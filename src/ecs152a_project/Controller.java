@@ -1,5 +1,8 @@
 package ecs152a_project;
 
+import java.util.Queue;
+import java.util.LinkedList;
+
 public class Controller {
 	public static void main( String[] args ){
 		double currentTime = 0;
@@ -8,7 +11,7 @@ public class Controller {
 		double nextArrivTime;
 		double serviceTime;
 		GEL eventList = new GEL();
-		Queue packetQueue = new Queue();
+		Queue<Node> packetQueue = new LinkedList<Node>();
 		Statistics stats = new Statistics();
 		
 		/*currentTime = currentTime + negative_exponentially_distributed_time(lambda[0]);
@@ -23,7 +26,6 @@ public class Controller {
 		eventList.insert(event3);*/
 		
 		currentTime = currentTime + negative_exponentially_distributed_time(lambda[0]);
-		serviceTime = negative_exponentially_distributed_time(mu);
 		Events FirstEvent = new Events("arrival",0,currentTime);
 		eventList.insert(FirstEvent);
 		for (int i = 1; i < 25; i++){ 
@@ -37,7 +39,8 @@ public class Controller {
 				eventList.insert(event);
 				
 				//Create new packet (insert in queue)
-				
+				serviceTime = negative_exponentially_distributed_time(mu);
+				packetQueue.addLast(new Node(i,serviceTime));
 			}
 			else if(currentEvent.getType() == "departure"){
 				if(packetQueue.getNumElem() == 0){

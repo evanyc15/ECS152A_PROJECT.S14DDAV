@@ -12,7 +12,6 @@ public class Events {
 		type = null;
 		eventNumber = -1;
 		eventTime = -1;
-		serviceTime = 0;
 	}
 	Events(String inType, int inNum, double inTime){
 		type = inType;
