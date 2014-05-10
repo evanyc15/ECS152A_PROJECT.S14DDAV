@@ -1,22 +1,22 @@
 package ecs152a_project;
 
 public class Statistics {
-	private int serverRunningTime;
+	private int serverBusyTime;
 	private int serverTotalTime;
 	private int numPackets;
 	private int numDroppedPackets;
 	
 	public Statistics(){
-		serverRunningTime = 0;
+		serverBusyTime = 0;
 		serverTotalTime = 0;
 		numPackets = 0;
 		numDroppedPackets = 0;
 	}
-	public int getServerRunningTime() {
-		return serverRunningTime;
+	public int getServerBusyTime() {
+		return serverBusyTime;
 	}
-	public void setServerRunningTime(int serverRunningTime) {
-		this.serverRunningTime = serverRunningTime;
+	public void setServerBusyTime(int inTime) {
+		this.serverBusyTime = inTime;
 	}
 	public int getServerTotalTime() {
 		return serverTotalTime;
@@ -35,5 +35,11 @@ public class Statistics {
 	}
 	public void setNumDroppedPackets(int numDroppedPackets) {
 		this.numDroppedPackets = numDroppedPackets;
+	}
+	public void outputStats(){
+		double serverBusyFraction = (double)serverBusyTime/(double)serverTotalTime;
+		
+		System.out.print("Server Busy Time: " + serverBusyTime + "\nServer Total Time: " + serverTotalTime + 
+				"\nPackets Dropped: " + numDroppedPackets + "\nServer Busy Fraction: " + serverBusyFraction);
 	}
 }
