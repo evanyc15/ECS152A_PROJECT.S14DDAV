@@ -22,6 +22,9 @@ public class GEL{
 		firstEvent = GelList.removeFirst();
 		return firstEvent;
 	}
+	public Events getNode(int index){
+		return GelList.get(index);
+	}
 	public void printGel(){
 		for(int i = 0; i < GelList.size(); i++){
 			Events temp = GelList.get(i);

@@ -7,19 +7,17 @@ public class Events {
 	private String type;
 	private int eventNumber;
 	private double eventTime;
-	private int packetSize;
 	
 	Events(){
 		type = null;
 		eventNumber = -1;
 		eventTime = -1;
-		packetSize = 0;
+		serviceTime = 0;
 	}
-	Events(String inType, int inNum, double inTime, int inSize){
+	Events(String inType, int inNum, double inTime){
 		type = inType;
 		eventNumber = inNum;
 		eventTime = inTime;
-		packetSize = inSize;
 	}
 	public String getType(){
 		return type;
@@ -29,9 +27,6 @@ public class Events {
 	}
 	public double getTime(){
 		return eventTime;
-	}
-	public int getSize(){
-		return packetSize;
 	}
 }
 

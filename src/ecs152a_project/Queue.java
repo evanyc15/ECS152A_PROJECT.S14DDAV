@@ -6,15 +6,20 @@ public class Queue {
 	private int numElem;
 
 	protected class Node{
-		protected Events data;
+		protected int packetSize;
+		protected int packetNum;
 		protected Node next;
 
-		public Node(Events inData){
-			data = inData;
+		public Node(int inNum,int inData){
+			packetNum = inNum;
+			packetSize = inData;
 			next = null;
 		}
-		public Events getData(){
-			return data;
+		public int getPacketSize(){
+			return packetSize;
+		}
+		public int getPacketNum(){
+			return packetNum;
 		}
 	}
 	public Queue(){
@@ -27,6 +32,9 @@ public class Queue {
 		else{
 			return false;
 		}
+	}
+	public int getNumElem(){
+		return numElem;
 	}
 	public void enqueue(Events inData){
 		Node oldNode = last;
