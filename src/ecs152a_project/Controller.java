@@ -14,7 +14,7 @@ public class Controller {
 		Queue<Node> packetQueue = new LinkedList<Node>(); //Queue represents the packets, every time we have a new packet, we insert into Queue
 		Statistics stats = new Statistics();
 		
-		calculate(lambda1,MAXBUFFER,mu,2,2);
+		calculate(lambda1,MAXBUFFER,mu,2,1);
 	} // end main 
 	
 	public static double negative_exponentially_distributed_time(double rate) 
@@ -56,22 +56,24 @@ public class Controller {
 				if(queueSize == 0){
 					Events depEvent = new Events("departure",currentEvent.getNumber(),currentTime + packet.getPacketSize());
 					eventList.insert(depEvent);
+					queueSize++;
 				}
 				//Server is busy
 				else if(queueSize > 0){
 					stats.setServerBusyTime(stats.getServerBusyTime() + 1);
 					if(MAXBUFFER[bufferNum] == -1){
 						packetQueue.add(packet);
+						queueSize++; //NOT SURE ABOUT THIS
 					}
 					else if(queueSize - 1 < MAXBUFFER[bufferNum]){ //MAXBUFFER INDEX SHOULD BE SET DEPENDING ON FOR LOOP
 						packetQueue.add(packet);
+						queueSize++; //NOT SURE ABOUT THIS
 					}
 					else{
 						stats.setNumDroppedPackets(stats.getNumDroppedPackets() + 1);
 						//DROP PACKET HERE
 					}
 				}
-				queueSize++; //NOT SURE ABOUT THIS
 			}
 			//Departure Events
 			else if(currentEvent.getType() == "departure"){
