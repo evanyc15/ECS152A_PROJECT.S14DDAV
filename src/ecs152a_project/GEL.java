@@ -12,7 +12,6 @@ public class GEL{
 		GelList = new LinkedList<Events>();
 	}
 	public void insert(Events event){
-		boolean added = false;
 		
 		GelList.add(event);
 		Collections.sort(GelList,new EventsComp());

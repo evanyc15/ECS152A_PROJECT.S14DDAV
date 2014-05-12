@@ -16,18 +16,13 @@ public class Controller {
 		}
 		for(int i = 0; i < lambda2.length; i++){
 			for(int j = 1; j < MAXBUFFER.length; j++){
-				calculate(lambda1,MAXBUFFER,mu,i,j);
+				calculate(lambda2,MAXBUFFER,mu,i,j);
 			}
 		}
 	} // end main 
 	
-	public static double negative_exponentially_distributed_time(double rate) 
-    {
-		double u;
-		u = Math.random()*1+0;
-		return ((-1/rate)*Math.log(1-u));
-    }
-	
+	//This is the main portion of the program. It computes everything
+	/*---------------------------------------------------------------------------------------*/
 	public static void calculate(double[] lambda, int[] MAXBUFFER, double mu, int lambdaNum,int bufferNum){
 		double currentTime = 0;
 		double nextArrivTime;
@@ -37,6 +32,8 @@ public class Controller {
 		Statistics stats = new Statistics();
 		
 		currentTime = currentTime + negative_exponentially_distributed_time(lambda[lambdaNum]);
+		//currentTime = currentTime + ParetoDistr(lambda[lambdaNum]);
+		
 		Events FirstEvent = new Events("arrival",0,currentTime);
 		eventList.insert(FirstEvent);
 		for (int i = 0; i < 100000; i++){ 
@@ -44,19 +41,23 @@ public class Controller {
 			
 			//Processing Events
 			//Arrival Event
+			/*-----------------------------------------------------------------------------------------*/
 			if(currentEvent.getType() == "arrival"){
 				//Creating next arrival event
 				currentTime = currentEvent.getTime();
 				nextArrivTime = currentTime + negative_exponentially_distributed_time(lambda[lambdaNum]);
+				//nextArrivTime = currentTime + ParetoDistr(lambda[lambdaNum]);
 				
 				//Create new packet (insert in queue)
 				Node packet = new Node(currentEvent.getNumber(),negative_exponentially_distributed_time(mu));
+				//Node packet = new Node(currentEvent.getNumber(),ParetoDistr(mu));
 				
 				Events arrEvent = new Events("arrival",currentEvent.getNumber() + 1,nextArrivTime);
 				eventList.insert(arrEvent);
 				
 				//Processing Arrival Event
 				//Server is free
+				/*---------------------------------------------------------------------------------------*/
 				if(queueSize == 0){
 					Events depEvent = new Events("departure",currentEvent.getNumber(),currentTime + packet.getPacketSize());
 					eventList.insert(depEvent);
@@ -80,6 +81,7 @@ public class Controller {
 				}
 			}
 			//Departure Events
+			/*---------------------------------------------------------------------------------------*/
 			else if(currentEvent.getType() == "departure"){
 				currentTime = currentEvent.getTime();
 				queueSize--;
@@ -93,5 +95,21 @@ public class Controller {
 			stats.setServerTotalTime(stats.getServerTotalTime() + 1);
 		} 
 		stats.outputStats(lambda[lambdaNum],mu,MAXBUFFER[bufferNum]);
+		
+		System.out.print(Math.random() * (0 - (-1)) + (-1) + "\n\n");
+	}
+	
+	public static double negative_exponentially_distributed_time(double rate) 
+    {
+		double u;
+		u = Math.random()*1+0;
+		return ((-1/rate)*Math.log(1-u));
+    }
+	
+	//Extra Credit Pareto Distribution
+	public static double ParetoDistr(double rate){
+		double R;
+        R = Math.random() * (0 - (-1)) + (-1);
+        return (double)1/(double)(Math.pow(R,(double)1/rate));
 	}
 }
