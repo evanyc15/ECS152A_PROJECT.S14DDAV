@@ -10,11 +10,15 @@ public class Controller {
 		double lambda2[] = {0.2,0.4,0.6,0.8,0.9};
 		double mu = 1.0;
 		int[] MAXBUFFER = {-1,1,20,50}; //-1 means infinite
-		GEL eventList = new GEL();
-		Queue<Node> packetQueue = new LinkedList<Node>(); //Queue represents the packets, every time we have a new packet, we insert into Queue
-		Statistics stats = new Statistics();
 		
-		calculate(lambda1,MAXBUFFER,mu,2,1);
+		for(int i = 0; i < lambda1.length; i++){
+			calculate(lambda1,MAXBUFFER,mu,i,0);
+		}
+		for(int i = 0; i < lambda2.length; i++){
+			for(int j = 1; j < MAXBUFFER.length; j++){
+				calculate(lambda1,MAXBUFFER,mu,i,j);
+			}
+		}
 	} // end main 
 	
 	public static double negative_exponentially_distributed_time(double rate) 
@@ -88,6 +92,6 @@ public class Controller {
 			
 			stats.setServerTotalTime(stats.getServerTotalTime() + 1);
 		} 
-		stats.outputStats(lambda[lambdaNum],mu);
+		stats.outputStats(lambda[lambdaNum],mu,MAXBUFFER[bufferNum]);
 	}
 }

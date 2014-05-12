@@ -47,12 +47,25 @@ public class Statistics {
 		p = lambda/mu;
 		meanQueueLength = (p*p)/(1-p);
 	}
-	public void outputStats(double lambda, double mu){
+	public void outputStats(double lambda, double mu, int bufferNum){
 		double serverBusyFraction = (double)serverBusyTime/(double)serverTotalTime;
 		this.setmeanQueueLength(lambda, mu);
 		
-		System.out.print("Server Busy Time: " + serverBusyTime + "\nServer Total Time: " + serverTotalTime + 
-				"\nPackets Dropped: " + numDroppedPackets + "\nServer Busy Fraction: " + serverBusyFraction +
-				"\nMean Queue Length: " + meanQueueLength);
+		if(bufferNum == -1){
+			System.out.print("Run with Lambda: " + lambda + ", mu: " + mu + ", and buffer: infinity " + 
+					"\n-----------------------------------------------------------------" + 
+	 				"\nServer Busy Time: " + serverBusyTime + "\nServer Total Time: " + serverTotalTime + 
+					"\nPackets Dropped: " + numDroppedPackets + "\nServer Busy Fraction: " + serverBusyFraction +
+					"\nMean Queue Length: " + meanQueueLength + 
+					"\n-----------------------------------------------------------------\n\n");
+		}
+		else{
+			System.out.print("Run with Lambda: " + lambda + ", mu: " + mu + ", and buffer: " + bufferNum + 
+					"\n-----------------------------------------------------------------" + 
+	 				"\nServer Busy Time: " + serverBusyTime + "\nServer Total Time: " + serverTotalTime + 
+					"\nPackets Dropped: " + numDroppedPackets + "\nServer Busy Fraction: " + serverBusyFraction +
+					"\nMean Queue Length: " + meanQueueLength + 
+					"\n-----------------------------------------------------------------\n\n");
+		}
 	}
 }
