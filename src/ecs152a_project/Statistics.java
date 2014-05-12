@@ -5,12 +5,14 @@ public class Statistics {
 	private int serverTotalTime;
 	private int numPackets;
 	private int numDroppedPackets;
+	private double meanQueueLength;
 	
 	public Statistics(){
 		serverBusyTime = 0;
 		serverTotalTime = 0;
 		numPackets = 0;
 		numDroppedPackets = 0;
+		meanQueueLength = 0.0;
 	}
 	public int getServerBusyTime() {
 		return serverBusyTime;
@@ -36,10 +38,21 @@ public class Statistics {
 	public void setNumDroppedPackets(int numDroppedPackets) {
 		this.numDroppedPackets = numDroppedPackets;
 	}
-	public void outputStats(){
+	public double getmeanQueueLength(){
+		return meanQueueLength;
+	}
+	public void setmeanQueueLength(double lambda, double mu){
+		double p;
+		
+		p = lambda/mu;
+		meanQueueLength = (p*p)/(1-p);
+	}
+	public void outputStats(double lambda, double mu){
 		double serverBusyFraction = (double)serverBusyTime/(double)serverTotalTime;
+		this.setmeanQueueLength(lambda, mu);
 		
 		System.out.print("Server Busy Time: " + serverBusyTime + "\nServer Total Time: " + serverTotalTime + 
-				"\nPackets Dropped: " + numDroppedPackets + "\nServer Busy Fraction: " + serverBusyFraction);
+				"\nPackets Dropped: " + numDroppedPackets + "\nServer Busy Fraction: " + serverBusyFraction +
+				"\nMean Queue Length: " + meanQueueLength);
 	}
 }

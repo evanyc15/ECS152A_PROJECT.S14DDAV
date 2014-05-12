@@ -88,6 +88,6 @@ public class Controller {
 			
 			stats.setServerTotalTime(stats.getServerTotalTime() + 1);
 		} 
-		stats.outputStats();
+		stats.outputStats(lambda[lambdaNum],mu);
 	}
 }
