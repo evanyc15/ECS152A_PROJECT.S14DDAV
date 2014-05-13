@@ -34,8 +34,8 @@ public class Statistics {
 	public double getServerTotalTime() {
 		return serverTotalTime;
 	}
-	public void calcServerTotalTime(double serverTotalTime) {
-		this.serverTotalTime += serverTotalTime;
+	public void setServerTotalTime(double serverTotalTime) {
+		this.serverTotalTime = serverTotalTime;
 	}
 	public int getNumPackets() {
 		return numPackets;

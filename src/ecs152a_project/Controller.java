@@ -63,7 +63,7 @@ public class Controller {
 				if(queueSize == 0){
 					Events depEvent = new Events("departure",currentEvent.getNumber(),currentTime + packet.getPacketSize());
 					stats.calcBusyTime(currentEvent.getTime(), depEvent.getTime());
-					stats.calcServerTotalTime(depEvent.getTime());
+					stats.setServerTotalTime(depEvent.getTime());
 					eventList.insert(depEvent);
 					queueSize++;
 				}
