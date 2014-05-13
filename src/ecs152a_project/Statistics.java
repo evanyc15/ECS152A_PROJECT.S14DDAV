@@ -1,8 +1,10 @@
 package ecs152a_project;
 
 public class Statistics {
-	private int serverBusyTime;
-	private int serverTotalTime;
+	private double arrivalPoint;
+	private double departurePoint;
+	private double serverBusyTime;
+	private double serverTotalTime;
 	private int numPackets;
 	private int numDroppedPackets;
 	private double meanQueueLength;
@@ -13,18 +15,27 @@ public class Statistics {
 		numPackets = 0;
 		numDroppedPackets = 0;
 		meanQueueLength = 0.0;
+		arrivalPoint = 0.0;
+		departurePoint = 0.0;
 	}
-	public int getServerBusyTime() {
+	public void calcBusyTime(double nextArrive, double nextDept){
+		if(nextArrive >= departurePoint){
+			serverBusyTime += nextDept - nextArrive;
+		}
+		else{
+			serverBusyTime += nextDept - departurePoint;
+		}
+		arrivalPoint = nextArrive;
+		departurePoint = nextDept;
+	}
+	public double getServerBusyTime() {
 		return serverBusyTime;
 	}
-	public void setServerBusyTime(int inTime) {
-		this.serverBusyTime = inTime;
-	}
-	public int getServerTotalTime() {
+	public double getServerTotalTime() {
 		return serverTotalTime;
 	}
-	public void setServerTotalTime(int serverTotalTime) {
-		this.serverTotalTime = serverTotalTime;
+	public void calcServerTotalTime(double serverTotalTime) {
+		this.serverTotalTime += serverTotalTime;
 	}
 	public int getNumPackets() {
 		return numPackets;

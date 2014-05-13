@@ -55,17 +55,19 @@ public class Controller {
 				Events arrEvent = new Events("arrival",currentEvent.getNumber() + 1,nextArrivTime);
 				eventList.insert(arrEvent);
 				
+				
 				//Processing Arrival Event
 				//Server is free
 				/*---------------------------------------------------------------------------------------*/
 				if(queueSize == 0){
 					Events depEvent = new Events("departure",currentEvent.getNumber(),currentTime + packet.getPacketSize());
+					stats.calcBusyTime(currentEvent.getTime(), depEvent.getTime());
+					stats.calcServerTotalTime(depEvent.getTime());
 					eventList.insert(depEvent);
 					queueSize++;
 				}
 				//Server is busy
 				else if(queueSize > 0){
-					stats.setServerBusyTime(stats.getServerBusyTime() + 1);
 					if(MAXBUFFER[bufferNum] == -1){
 						packetQueue.add(packet);
 						queueSize++; //NOT SURE ABOUT THIS
@@ -91,12 +93,10 @@ public class Controller {
 					eventList.insert(depEvent);
 				}
 			}
-			
-			stats.setServerTotalTime(stats.getServerTotalTime() + 1);
 		} 
 		stats.outputStats(lambda[lambdaNum],mu,MAXBUFFER[bufferNum]);
 		
-		System.out.print(Math.random() * (0 - (-1)) + (-1) + "\n\n");
+		//System.out.print(Math.random() * (0 - (-1)) + (-1) + "\n\n");
 	}
 	
 	public static double negative_exponentially_distributed_time(double rate) 
