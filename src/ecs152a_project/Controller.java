@@ -2,7 +2,6 @@ package ecs152a_project;
 
 import java.util.Queue;
 import java.util.LinkedList;
-import java.util.Random;
 
 public class Controller {
 	
@@ -39,23 +38,21 @@ public class Controller {
 		eventList.insert(FirstEvent);
 		for (int i = 0; i < 100000; i++){ 
 			Events currentEvent = eventList.removeFirstEvent();
-			
 			//Processing Events
 			//Arrival Event
 			/*-----------------------------------------------------------------------------------------*/
 			if(currentEvent.getType() == "arrival"){
 				//Creating next arrival event
+				stats.calcQueueLength(queueSize, currentEvent.getTime());
 				currentTime = currentEvent.getTime();
 				nextArrivTime = currentTime + negative_exponentially_distributed_time(lambda[lambdaNum]);
 				//nextArrivTime = currentTime + ParetoDistr(lambda[lambdaNum]);
 				
 				//Create new packet (insert in queue)
 				Node packet = new Node(currentEvent.getNumber(),negative_exponentially_distributed_time(mu));
-				//Node packet = new Node(currentEvent.getNumber(),ParetoDistr(mu));
 				
 				Events arrEvent = new Events("arrival",currentEvent.getNumber() + 1,nextArrivTime);
 				eventList.insert(arrEvent);
-				
 				
 				//Processing Arrival Event
 				//Server is free
@@ -86,6 +83,7 @@ public class Controller {
 			//Departure Events
 			/*---------------------------------------------------------------------------------------*/
 			else if(currentEvent.getType() == "departure"){
+				stats.calcQueueLength(queueSize, currentEvent.getTime());
 				currentTime = currentEvent.getTime();
 				queueSize--;
 				if(queueSize > 0){
@@ -93,6 +91,7 @@ public class Controller {
 					Events depEvent = new Events("departure",temp.getPacketNum(),currentTime + temp.getPacketSize());
 					eventList.insert(depEvent);
 					stats.calcBusyTime(currentEvent.getTime(), depEvent.getTime());
+					stats.setServerTotalTime(depEvent.getTime());
 				}
 			}
 		} 
@@ -109,27 +108,13 @@ public class Controller {
 	
 	//Extra Credit Pareto Distribution
 	public static double ParetoDistr(double rate){
-		/*Random r = new Random();
-	    double L = Math.exp(-rate);
-	    int k = 0;
-	    double p = 1.0;
-	    do {
-	        p = p * r.nextDouble();
-	        k++;
-	    } while (p > L);
-	    k =  k - 1;*/
-		double k = negative_exponentially_distributed_time(rate);
-	    double xM = 0.1 * (double)k;
-	    double alpha = -(double)k/(1.0-(double)k);
-	    double x = negative_exponentially_distributed_time(alpha);
-	    
-	    if(rate < xM){
-	    	return 0;
-	    }
-	    else{
-	    	//return k;
-	    	return x;
-	    	//return (alpha*Math.pow(xM,alpha))/(Math.pow(x, alpha+1));
-	    }
+		double k = (double)1.0/rate;
+		double xM = 0.1*k;
+		double alpha = -k/(xM - k);
+		double u = Math.random()*1+0;
+		
+		//return alpha*Math.pow(xM,alpha)*Math.pow(u,-(alpha+1));
+		return xM/(Math.pow(u, (double)1.0/alpha));
+		
 	}
 }
