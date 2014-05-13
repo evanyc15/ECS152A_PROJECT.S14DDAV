@@ -2,6 +2,7 @@ package ecs152a_project;
 
 import java.util.Queue;
 import java.util.LinkedList;
+import java.util.Random;
 
 public class Controller {
 	
@@ -70,11 +71,11 @@ public class Controller {
 				else if(queueSize > 0){
 					if(MAXBUFFER[bufferNum] == -1){
 						packetQueue.add(packet);
-						queueSize++; //NOT SURE ABOUT THIS
+						queueSize++;
 					}
 					else if(queueSize - 1 < MAXBUFFER[bufferNum]){ //MAXBUFFER INDEX SHOULD BE SET DEPENDING ON FOR LOOP
 						packetQueue.add(packet);
-						queueSize++; //NOT SURE ABOUT THIS
+						queueSize++;
 					}
 					else{
 						stats.setNumDroppedPackets(stats.getNumDroppedPackets() + 1);
@@ -95,8 +96,7 @@ public class Controller {
 			}
 		} 
 		stats.outputStats(lambda[lambdaNum],mu,MAXBUFFER[bufferNum]);
-		
-		//System.out.print(Math.random() * (0 - (-1)) + (-1) + "\n\n");
+		//System.out.print("\n" + ParetoDistr(lambda[lambdaNum]) + "\n");
 	}
 	
 	public static double negative_exponentially_distributed_time(double rate) 
@@ -108,8 +108,27 @@ public class Controller {
 	
 	//Extra Credit Pareto Distribution
 	public static double ParetoDistr(double rate){
-		double R;
-        R = Math.random() * (0 - (-1)) + (-1);
-        return (double)1/(double)(Math.pow(R,(double)1/rate));
+		/*Random r = new Random();
+	    double L = Math.exp(-rate);
+	    int k = 0;
+	    double p = 1.0;
+	    do {
+	        p = p * r.nextDouble();
+	        k++;
+	    } while (p > L);
+	    k =  k - 1;*/
+		double k = negative_exponentially_distributed_time(rate);
+	    double xM = 0.1 * (double)k;
+	    double alpha = -(double)k/(1.0-(double)k);
+	    double x = negative_exponentially_distributed_time(alpha);
+	    
+	    if(rate < xM){
+	    	return 0;
+	    }
+	    else{
+	    	//return k;
+	    	return x;
+	    	//return (alpha*Math.pow(xM,alpha))/(Math.pow(x, alpha+1));
+	    }
 	}
 }
