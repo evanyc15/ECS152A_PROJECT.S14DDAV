@@ -15,7 +15,7 @@ public class Statistics {
 		numPackets = 0;
 		numDroppedPackets = 0;
 		meanQueueLength = 0.0;
-		arrivalPoint = 0.0;
+		//arrivalPoint = 0.0;
 		departurePoint = 0.0;
 	}
 	public void calcBusyTime(double nextArrive, double nextDept){
@@ -25,7 +25,7 @@ public class Statistics {
 		else{
 			serverBusyTime += nextDept - departurePoint;
 		}
-		arrivalPoint = nextArrive;
+		//arrivalPoint = nextArrive;
 		departurePoint = nextDept;
 	}
 	public double getServerBusyTime() {

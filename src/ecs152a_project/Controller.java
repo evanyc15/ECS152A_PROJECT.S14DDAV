@@ -61,11 +61,11 @@ public class Controller {
 				//Server is free
 				/*---------------------------------------------------------------------------------------*/
 				if(queueSize == 0){
-					Events depEvent = new Events("departure",currentEvent.getNumber(),currentTime + packet.getPacketSize());
-					stats.calcBusyTime(currentEvent.getTime(), depEvent.getTime());
-					stats.setServerTotalTime(depEvent.getTime());
+					Events depEvent = new Events("departure",currentEvent.getNumber(),currentEvent.getTime() + packet.getPacketSize());
 					eventList.insert(depEvent);
 					queueSize++;
+					stats.calcBusyTime(currentEvent.getTime(), depEvent.getTime());
+					stats.setServerTotalTime(depEvent.getTime());
 				}
 				//Server is busy
 				else if(queueSize > 0){
@@ -92,6 +92,7 @@ public class Controller {
 					Node temp = packetQueue.remove();
 					Events depEvent = new Events("departure",temp.getPacketNum(),currentTime + temp.getPacketSize());
 					eventList.insert(depEvent);
+					stats.calcBusyTime(currentEvent.getTime(), depEvent.getTime());
 				}
 			}
 		} 
