@@ -42,8 +42,8 @@ public class Controller {
 			//Arrival Event
 			/*-----------------------------------------------------------------------------------------*/
 			if(currentEvent.getType() == "arrival"){
-				//Creating next arrival event
 				stats.calcQueueLength(queueSize, currentEvent.getTime());
+				//Creating next arrival event
 				currentTime = currentEvent.getTime();
 				nextArrivTime = currentTime + negative_exponentially_distributed_time(lambda[lambdaNum]);
 				//nextArrivTime = currentTime + ParetoDistr(lambda[lambdaNum]);
