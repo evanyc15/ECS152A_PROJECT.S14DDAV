@@ -34,7 +34,7 @@ public class Controller {
 		//currentTime = currentTime + negative_exponentially_distributed_time(lambda[lambdaNum]);
 		currentTime = currentTime + ParetoDistr(lambda[lambdaNum]);
 		
-		Events FirstEvent = new Events("arrival",0,currentTime);
+		Events FirstEvent = new Events("arrival",currentTime);
 		eventList.insert(FirstEvent);
 		for (int i = 0; i < 100000; i++){ 
 			Events currentEvent = eventList.removeFirstEvent();
@@ -49,16 +49,16 @@ public class Controller {
 				nextArrivTime = currentTime + ParetoDistr(lambda[lambdaNum]);
 				
 				//Create new packet (insert in queue)
-				Node packet = new Node(currentEvent.getNumber(),negative_exponentially_distributed_time(mu));
+				Node packet = new Node(negative_exponentially_distributed_time(mu));
 				
-				Events arrEvent = new Events("arrival",currentEvent.getNumber() + 1,nextArrivTime);
+				Events arrEvent = new Events("arrival",nextArrivTime);
 				eventList.insert(arrEvent);
 				
 				//Processing Arrival Event
 				//Server is free
 				/*---------------------------------------------------------------------------------------*/
 				if(queueSize == 0){
-					Events depEvent = new Events("departure",currentEvent.getNumber(),currentEvent.getTime() + packet.getPacketSize());
+					Events depEvent = new Events("departure",currentEvent.getTime() + packet.getPacketSize());
 					eventList.insert(depEvent);
 					queueSize++;
 					stats.calcBusyTime(currentEvent.getTime(), depEvent.getTime());
@@ -88,7 +88,7 @@ public class Controller {
 				queueSize--;
 				if(queueSize > 0){
 					Node temp = packetQueue.remove();
-					Events depEvent = new Events("departure",temp.getPacketNum(),currentTime + temp.getPacketSize());
+					Events depEvent = new Events("departure",currentTime + temp.getPacketSize());
 					eventList.insert(depEvent);
 					stats.calcBusyTime(currentEvent.getTime(), depEvent.getTime());
 					stats.setServerTotalTime(depEvent.getTime());

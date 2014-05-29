@@ -6,18 +6,31 @@ import java.util.Queue;
 public class Hosts {
 	private int hostNum;
 	private boolean Token;
-	private double Time;
+	private double lastTokenPassedTime;
+	private double currentTime;
 	private double lambda;
 	Queue<Node> packetQueue; //= new LinkedList<Node>();
 	
 	Hosts(int inNum, boolean inToken, double inlambda){
-		Time = 0.0;
+		lastTokenPassedTime = 0.0;
+		currentTime = 0.0;
 		hostNum = inNum;
 		Token = inToken;
 		lambda = inlambda;
 		packetQueue = new LinkedList<Node>(); //Similar to the queue in controller because it holds packets
 	}
-
+	public double getLastTokenPassedTime() {
+		return lastTokenPassedTime;
+	}
+	public void setLastTokenPassedTime(double lastTokenPassedTime) {
+		this.lastTokenPassedTime = lastTokenPassedTime;
+	}
+	public double getCurrentTime() {
+		return currentTime;
+	}
+	public void setCurrentTime(double currentTime) {
+		this.currentTime = currentTime;
+	}
 	public int getHostNum() {
 		return hostNum;
 	}
@@ -31,7 +44,7 @@ public class Hosts {
 		Token = token;
 	}
 	public void addPacket(int inNum, int inSize){
-		Node packet = new Node(inNum,inSize);
+		Node packet = new Node(inSize);
 		packetQueue.add(packet);
 	}
 	public Node removePacket(){
@@ -40,6 +53,13 @@ public class Hosts {
 	}
 	public int getQueueSize(){
 		return packetQueue.size();
+	}
+	public void retrieveNewPackets(){
+		double tempTime = this.currentTime;
+		while(tempTime <= lastTokenPassedTime){
+			tempTime = this.currentTime + negative_exponentially_distributed_time(lambda);
+			packetQueue.add(new Node(tempTime));
+		}
 	}
 	public static double negative_exponentially_distributed_time(double rate) 
     {
