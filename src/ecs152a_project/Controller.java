@@ -31,8 +31,8 @@ public class Controller {
 		Queue<Node> packetQueue = new LinkedList<Node>(); //Queue represents the packets, every time we have a new packet, we insert into Queue
 		Statistics stats = new Statistics();
 		
-		currentTime = currentTime + negative_exponentially_distributed_time(lambda[lambdaNum]);
-		//currentTime = currentTime + ParetoDistr(lambda[lambdaNum]);
+		//currentTime = currentTime + negative_exponentially_distributed_time(lambda[lambdaNum]);
+		currentTime = currentTime + ParetoDistr(lambda[lambdaNum]);
 		
 		Events FirstEvent = new Events("arrival",0,currentTime);
 		eventList.insert(FirstEvent);
@@ -45,8 +45,8 @@ public class Controller {
 				stats.calcQueueLength(queueSize, currentEvent.getTime());
 				//Creating next arrival event
 				currentTime = currentEvent.getTime();
-				nextArrivTime = currentTime + negative_exponentially_distributed_time(lambda[lambdaNum]);
-				//nextArrivTime = currentTime + ParetoDistr(lambda[lambdaNum]);
+				//nextArrivTime = currentTime + negative_exponentially_distributed_time(lambda[lambdaNum]);
+				nextArrivTime = currentTime + ParetoDistr(lambda[lambdaNum]);
 				
 				//Create new packet (insert in queue)
 				Node packet = new Node(currentEvent.getNumber(),negative_exponentially_distributed_time(mu));
@@ -116,5 +116,10 @@ public class Controller {
 		//return alpha*Math.pow(xM,alpha)*Math.pow(u,-(alpha+1));
 		return xM/(Math.pow(u, (double)1.0/alpha));
 		
+	}
+	
+	//Phase II Uniform Distribution
+	public static double UniDistr(){
+		return Math.random()*1518+64;
 	}
 }
