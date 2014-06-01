@@ -11,7 +11,7 @@ public class TokenRing {
 	TokenRing(int numHosts,double lambda){
 		TokenRing = new LinkedList<Hosts>();
 		for(int i = 1; i <= numHosts; i++){ //Starts at 1 rather than 0 cause its like that in instructions
-			Hosts host = new Hosts(i,false,lambda);
+			Hosts host = new Hosts(i,numHosts,false,lambda);
 			TokenRing.add(host);
 		}
 	}

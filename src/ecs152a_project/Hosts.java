@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class Hosts {
+	private int totalHosts;
 	private int hostNum;
 	private boolean Token;
 	private double lastTokenPassedTime;
@@ -11,10 +12,11 @@ public class Hosts {
 	private double lambda;
 	Queue<Node> packetQueue; //= new LinkedList<Node>();
 	
-	Hosts(int inNum, boolean inToken, double inlambda){
+	Hosts(int inNum, int totalNum, boolean inToken, double inlambda){
 		lastTokenPassedTime = 0.0;
 		currentTime = 0.0;
 		hostNum = inNum;
+		totalHosts = totalNum;
 		Token = inToken;
 		lambda = inlambda;
 		packetQueue = new LinkedList<Node>(); //Similar to the queue in controller because it holds packets
@@ -58,7 +60,9 @@ public class Hosts {
 		double tempTime = this.currentTime;
 		while(tempTime <= lastTokenPassedTime){
 			tempTime = this.currentTime + negative_exponentially_distributed_time(lambda);
-			packetQueue.add(new Node(tempTime));
+			if(tempTime <= lastTokenPassedTime){
+				packetQueue.add(new Node(64 + Math.random()* ((1518 - 64) + 1),1 + (int)Math.random()*((totalHosts - 1) + 1)));
+			}
 		}
 	}
 	public static double negative_exponentially_distributed_time(double rate) 
