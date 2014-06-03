@@ -56,12 +56,20 @@ public class Hosts {
 	public int getQueueSize(){
 		return packetQueue.size();
 	}
+	public void clearQueue(){
+		packetQueue.clear();
+	}
 	public void retrieveNewPackets(){
 		double tempTime = this.currentTime;
 		while(tempTime <= lastTokenPassedTime){
 			tempTime = this.currentTime + negative_exponentially_distributed_time(lambda);
 			if(tempTime <= lastTokenPassedTime){
-				packetQueue.add(new Node(64 + Math.random()* ((1518 - 64) + 1),1 + (int)Math.random()*((totalHosts - 1) + 1)));
+				//Find destination host for each packet
+				int destinationHost;
+				do{
+					destinationHost = 1 + (int)Math.random()*((totalHosts - 1) + 1);
+				}while(destinationHost != this.hostNum);
+				packetQueue.add(new Node(64 + Math.random()* ((1518 - 64) + 1),destinationHost));
 			}
 		}
 	}

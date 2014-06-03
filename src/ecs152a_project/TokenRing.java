@@ -10,9 +10,13 @@ public class TokenRing {
 	
 	TokenRing(int numHosts,double lambda){
 		TokenRing = new LinkedList<Hosts>();
-		for(int i = 1; i <= numHosts; i++){ //Starts at 1 rather than 0 cause its like that in instructions
+		for(int i = 0; i < numHosts; i++){ //Starts at 0 rather than 1 for simplicity
 			Hosts host = new Hosts(i,numHosts,false,lambda);
 			TokenRing.add(host);
 		}
 	}
+	public Hosts getHost(int index){
+		return TokenRing.get(index);
+	}
+	
 }
