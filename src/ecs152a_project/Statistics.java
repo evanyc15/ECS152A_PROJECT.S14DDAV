@@ -9,6 +9,7 @@ public class Statistics {
 	private double meanQueueLength;
 	private double QueueLengthSum;
 	private double previousEventForLength;
+	private double totalFrameLengths;
 	
 	public Statistics(){
 		serverBusyTime = 0;
@@ -19,6 +20,13 @@ public class Statistics {
 		QueueLengthSum = 0.0;
 		departurePoint = 0.0;
 		previousEventForLength = 0.0;
+		totalFrameLengths = 0.0;
+	}
+	public double getTotalFrameLengths() {
+		return totalFrameLengths;
+	}
+	public void setTotalFrameLengths(double totalFrameLengths) {
+		this.totalFrameLengths += totalFrameLengths;
 	}
 	public void calcBusyTime(double nextArrive, double nextDept){
 		if(nextArrive >= departurePoint){

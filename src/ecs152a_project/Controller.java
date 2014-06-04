@@ -112,6 +112,7 @@ public class Controller {
 	}
 	public static void calculateP2(int iterations, int numHosts, double lambda){
 		TokenRing tokenRing = new TokenRing(numHosts,lambda);
+		Statistics stats = new Statistics();
 		double serverTime = 0.0;
 		
 		System.out.print("\nProject Phase II with Iterations: "+iterations+", NumHosts: "+numHosts+", Lambda: "+lambda+"\n");
@@ -138,6 +139,7 @@ public class Controller {
 						//This is to find the total size in bytes of frame (not how many packets are in it!!)
 						frameLength += tempNode1.getPacketSize();
 						frame.add(tempNode1);
+						stats.setTotalFrameLengths(frameLength);
 					}
 					//This is traversing frame through tokenRing
 					int currentHostNum = currentHost.getHostNum();
@@ -190,7 +192,9 @@ public class Controller {
 			Hosts tempHost3 = tokenRing.getHost(m);
 			queueDelay += tempHost3.getQueueDelay();
 		}
-		System.out.print("Total Delay: "+(queueDelay+serverTime)+" seconds\n");
+		
+		//THIS IS THE TOTAL DELAY, NOT THE TOTAL AVERAGE DELAY SO NOT SURE IF ITS RIGHT
+		System.out.print("Total Throughput: "+(stats.getTotalFrameLengths()/serverTime)+", Total Delay: "+(queueDelay+serverTime)+" seconds\n");
 	}
 	public static double negative_exponentially_distributed_time(double rate) 
     {
