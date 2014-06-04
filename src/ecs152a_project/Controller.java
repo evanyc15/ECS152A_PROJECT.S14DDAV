@@ -118,7 +118,7 @@ public class Controller {
 				currentHost.setLastTokenPassedTime(currentHost.getCurrentTime() + tokenRangeTime);
 				currentHost.retrieveNewPackets();
 				
-				tokenTraverseTime += + tokenRangeTime;
+				tokenTraverseTime += tokenRangeTime;
 				
 				if(currentHost.getQueueSize() > 0){
 					//Creates frame to move through token ring
