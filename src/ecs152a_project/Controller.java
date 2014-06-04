@@ -7,21 +7,29 @@ import java.util.Random;
 public class Controller {
 	
 	public static void main( String[] args ){
-		double lambda1[] = {0.1,0.25,0.4,0.55,0.65,0.80,0.90};
-		double lambda2[] = {0.2,0.4,0.6,0.8,0.9};
+		double lambda1P1[] = {0.1,0.25,0.4,0.55,0.65,0.80,0.90};
+		double lambda2P1[] = {0.2,0.4,0.6,0.8,0.9};
+		int iterationsP2[] = {25,50,100,500,10000};
+		double lambdaP2[] = {0.01,0.05,0.1,0.2,0.3,0.5,0.6,0.7,0.8,0.9};
+		int hostNumsP2[] = {10,25};
 		double mu = 1.0;
 		int[] MAXBUFFER = {-1,1,20,50}; //-1 means infinite
 		
-		/*for(int i = 0; i < lambda1.length; i++){
-			calculateP1(lambda1,MAXBUFFER,mu,i,0);
+		/*for(int i = 0; i < lambda1P1.length; i++){
+			calculateP1(lambda1P1,MAXBUFFER,mu,i,0);
 		}
-		for(int i = 0; i < lambda2.length; i++){
+		for(int i = 0; i < lambda2P1.length; i++){
 			for(int j = 1; j < MAXBUFFER.length; j++){
-				calculateP1(lambda2,MAXBUFFER,mu,i,j);
+				calculateP1(lambda2P1,MAXBUFFER,mu,i,j);
 			}
 		}*/
-		
-		calculateP2(100,10,0.9);
+		for(int i = 0; i < iterationsP2.length; i ++){
+			for(int j = 0; j < hostNumsP2.length; j++){
+				for(int k = 0; k < lambdaP2.length; k++){
+					calculateP2(iterationsP2[i],hostNumsP2[j],lambdaP2[k]);
+				}
+			}
+		}
 		
 	} // end main 
 	
@@ -106,7 +114,7 @@ public class Controller {
 		TokenRing tokenRing = new TokenRing(numHosts,lambda);
 		double serverTime = 0.0;
 		
-		System.out.print("Project Phase II\n");
+		System.out.print("\nProject Phase II with Iterations: "+iterations+", NumHosts: "+numHosts+", Lambda: "+lambda+"\n");
 		
 		serverTime = 10;
 		
@@ -182,7 +190,7 @@ public class Controller {
 			Hosts tempHost3 = tokenRing.getHost(m);
 			queueDelay += tempHost3.getQueueDelay();
 		}
-		System.out.print("Total Delay: "+(queueDelay+serverTime)+"\n");
+		System.out.print("Total Delay: "+(queueDelay+serverTime)+" seconds\n");
 	}
 	public static double negative_exponentially_distributed_time(double rate) 
     {
