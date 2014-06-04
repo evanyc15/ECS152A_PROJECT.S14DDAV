@@ -15,6 +15,9 @@ public class TokenRing {
 			TokenRing.add(host);
 		}
 	}
+	public int getTokenRingSize(){
+		return TokenRing.size();
+	}
 	public Hosts getHost(int index){
 		return TokenRing.get(index);
 	}

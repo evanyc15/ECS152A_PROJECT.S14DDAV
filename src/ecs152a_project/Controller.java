@@ -107,6 +107,8 @@ public class Controller {
 		double tokenTraverseTime = 0.0;
 		double tokenRangeTime;
 		
+		System.out.print("Project Phase II\n");
+		
 		for(int i = 0; i < iterations; i++ ){
 			for(int j = 0; j < numHosts; j++){
 				Hosts currentHost = tokenRing.getHost(j);
@@ -158,9 +160,9 @@ public class Controller {
 					//Set to false before passing token to next Host
 					currentHost.setToken(false);
 				}
+				System.out.print("Total Delay: "+totalDelay+"\n");
 			}
 		}
-		System.out.print("Total Delay: "+totalDelay+"\n");
 	}
 	public static double negative_exponentially_distributed_time(double rate) 
     {
