@@ -2,17 +2,20 @@ package ecs152a_project;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Random;
 
 public class Hosts {
 	private int totalHosts;
 	private int hostNum;
 	private boolean Token;
 	private double lastTokenPassedTime;
-	private double currentTime;
+	double currentTime;
 	private double lambda;
 	Queue<Node> packetQueue; //= new LinkedList<Node>();
+	private double queueDelay;
 	
 	Hosts(int inNum, int totalNum, boolean inToken, double inlambda){
+		queueDelay = 0.0;
 		lastTokenPassedTime = 0.0;
 		currentTime = 0.0;
 		hostNum = inNum;
@@ -21,17 +24,17 @@ public class Hosts {
 		lambda = inlambda;
 		packetQueue = new LinkedList<Node>(); //Similar to the queue in controller because it holds packets
 	}
+	public double getQueueDelay() {
+		return queueDelay;
+	}
+	public void setQueueDelay(double queueDelay) {
+		this.queueDelay += queueDelay;
+	}
 	public double getLastTokenPassedTime() {
 		return lastTokenPassedTime;
 	}
 	public void setLastTokenPassedTime(double lastTokenPassedTime) {
 		this.lastTokenPassedTime = lastTokenPassedTime;
-	}
-	public double getCurrentTime() {
-		return currentTime;
-	}
-	public void setCurrentTime(double currentTime) {
-		this.currentTime = currentTime;
 	}
 	public int getHostNum() {
 		return hostNum;
@@ -61,17 +64,24 @@ public class Hosts {
 	}
 	public void retrieveNewPackets(){
 		double tempTime = this.currentTime;
-		while(tempTime <= lastTokenPassedTime){
-			tempTime = this.currentTime + negative_exponentially_distributed_time(lambda);
-			if(tempTime <= lastTokenPassedTime){
+		Random rand = new Random();
+		while(tempTime <= this.lastTokenPassedTime){
+			tempTime += negative_exponentially_distributed_time(lambda);
+			if(tempTime <= this.lastTokenPassedTime){
 				//Find destination host for each packet
 				int destinationHost;
 				do{
-					destinationHost = 1 + (int)Math.random()*((totalHosts - 1) + 1);
-				}while(destinationHost != this.hostNum);
-				packetQueue.add(new Node(64 + Math.random()* ((1518 - 64) + 1),destinationHost));
+					destinationHost = rand.nextInt((9-0)+1)+0;
+				}while(destinationHost == this.hostNum);
+				packetQueue.add(new Node(((double)64 + Math.random() * ((double)1518 - (double)64)),destinationHost));
 			}
 		}
+	}
+	public double getCurrentTime() {
+		return currentTime;
+	}
+	public void setCurrentTime(double currentTime) {
+		this.currentTime = currentTime;
 	}
 	public static double negative_exponentially_distributed_time(double rate) 
     {

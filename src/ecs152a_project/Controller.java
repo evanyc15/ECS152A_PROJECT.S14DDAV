@@ -2,6 +2,7 @@ package ecs152a_project;
 
 import java.util.Queue;
 import java.util.LinkedList;
+import java.util.Random;
 
 public class Controller {
 	
@@ -20,7 +21,7 @@ public class Controller {
 			}
 		}*/
 		
-		calculateP2(10,10,0.01);
+		calculateP2(100,10,0.9);
 		
 	} // end main 
 	
@@ -103,22 +104,22 @@ public class Controller {
 	}
 	public static void calculateP2(int iterations, int numHosts, double lambda){
 		TokenRing tokenRing = new TokenRing(numHosts,lambda);
-		double totalDelay = 0.0;
-		double tokenTraverseTime = 0.0;
-		double tokenRangeTime;
+		double serverTime = 0.0;
 		
 		System.out.print("Project Phase II\n");
+		
+		serverTime = 10;
 		
 		for(int i = 0; i < iterations; i++ ){
 			for(int j = 0; j < numHosts; j++){
 				Hosts currentHost = tokenRing.getHost(j);
-				currentHost.setCurrentTime(tokenTraverseTime);
 				currentHost.setToken(true);
-				tokenRangeTime = negative_exponentially_distributed_time(lambda);
-				currentHost.setLastTokenPassedTime(currentHost.getCurrentTime() + tokenRangeTime);
+				currentHost.setLastTokenPassedTime(serverTime);
 				currentHost.retrieveNewPackets();
+				currentHost.setQueueDelay(currentHost.getLastTokenPassedTime() - currentHost.getCurrentTime());
+				currentHost.setCurrentTime(serverTime);
 				
-				tokenTraverseTime += tokenRangeTime;
+				//System.out.print("Host: "+currentHost.getHostNum()+" has "+currentHost.getQueueSize()+" packets in Queue\n");
 				
 				if(currentHost.getQueueSize() > 0){
 					//Creates frame to move through token ring
@@ -131,38 +132,57 @@ public class Controller {
 						frame.add(tempNode1);
 					}
 					//This is traversing frame through tokenRing
-					int traverseHost = currentHost.getHostNum() + 1; //Increment to begin on next host for frame transmitting
-					while(traverseHost != currentHost.getHostNum()){
-						tokenTraverseTime += 0.00001; 
+					int currentHostNum = currentHost.getHostNum();
+					int traverseHostNum = currentHostNum + 1; //Increment to begin on next host for frame transmitting
+					if(traverseHostNum == numHosts){
+						traverseHostNum = 0;
+					}
+					
+					//System.out.print("\nCurrentNode: " + currentHostNum+"\n");
+					
+					while(traverseHostNum != currentHostNum){
+						
+						//System.out.print("Traversing Node: " + traverseHostNum+"\n");
+						
+						serverTime += 0.00001; 
 						if(frame.size() > 0){
-							tokenTraverseTime += frameLength/13107200; 
-							totalDelay += (0.00001 + (frameLength/13107200.0));   //Not sure of the 13107200.0 byte -> Mbps conversion
+							//Transmission delay time
+							
+							//System.out.print("Transmission delay: " + (frameLength/(double)13107200) + "\n");
+							
+							serverTime += frameLength/(double)13107200; 
 							//This loop is traversing the frame to see if any of the packets has a destination for temp2 host
 							for(int k = 0; k < frame.size(); k++){
 								Node tempNode2 = frame.get(k);
-								if(traverseHost == tempNode2.getDestinationHost()){
+								if(traverseHostNum == tempNode2.getDestinationHost()){
 									Node tempFrameNode1 = frame.remove(k); //Removes it from frame
 									//Do something here because it matches
 									frameLength -= tempFrameNode1.getPacketSize();
 								}
 							}
 						}
-						
-						if(traverseHost + 1 >= numHosts){
-							traverseHost = 0;
+						if(traverseHostNum >= numHosts-1){
+							traverseHostNum = 0;
 						}
 						else{
-							traverseHost++;
+							traverseHostNum++;
 						}
 					}
+					serverTime += 0.00001;  //For the last link right before currentHostNum is reached
 				}
 				else{
 					//Set to false before passing token to next Host
 					currentHost.setToken(false);
 				}
-				System.out.print("Total Delay: "+totalDelay+"\n");
 			}
 		}
+		
+		double queueDelay = 0.0;
+		for(int m = 0; m < tokenRing.getTokenRingSize(); m++){
+			Hosts tempHost3 = tokenRing.getHost(m);
+			queueDelay += tempHost3.getQueueDelay();
+		}
+		System.out.print("Total Delay: "+(queueDelay+serverTime)+"\n");
 	}
 	public static double negative_exponentially_distributed_time(double rate) 
     {
