@@ -10,6 +10,8 @@ public class Statistics {
 	private double QueueLengthSum;
 	private double previousEventForLength;
 	private double totalFrameLengths;
+	private double totalThroughput;
+	private double totalQueueDelay;
 	
 	public Statistics(){
 		serverBusyTime = 0;
@@ -21,6 +23,23 @@ public class Statistics {
 		departurePoint = 0.0;
 		previousEventForLength = 0.0;
 		totalFrameLengths = 0.0;
+		totalThroughput = 0.0;
+		totalQueueDelay = 0.0;
+	}
+	public double getTotalQueueDelay() {
+		return totalQueueDelay;
+	}
+	public void setTotalQueueDelay(double totalQueueDelay) {
+		this.totalQueueDelay = totalQueueDelay;
+	}
+	public void addTotalQueueDelay(double totalQueueDelay) {
+		this.totalQueueDelay += totalQueueDelay;
+	}
+	public double getTotalThroughput() {
+		return totalThroughput;
+	}
+	public void addTotalThroughput(double totalThroughput) {
+		this.totalThroughput += totalThroughput;
 	}
 	public double getTotalFrameLengths() {
 		return totalFrameLengths;

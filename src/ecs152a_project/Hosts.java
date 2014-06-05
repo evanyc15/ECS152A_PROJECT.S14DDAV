@@ -27,7 +27,7 @@ public class Hosts {
 	public double getQueueDelay() {
 		return queueDelay;
 	}
-	public void setQueueDelay(double queueDelay) {
+	public void addQueueDelay(double queueDelay) {
 		this.queueDelay += queueDelay;
 	}
 	public double getLastTokenPassedTime() {
@@ -65,6 +65,7 @@ public class Hosts {
 	public void retrieveNewPackets(){
 		double tempTime = this.currentTime;
 		Random rand = new Random();
+		boolean first = true;
 		while(tempTime <= this.lastTokenPassedTime){
 			tempTime += negative_exponentially_distributed_time(lambda);
 			if(tempTime <= this.lastTokenPassedTime){
@@ -73,7 +74,7 @@ public class Hosts {
 				do{
 					destinationHost = rand.nextInt((9-0)+1)+0;
 				}while(destinationHost == this.hostNum);
-				packetQueue.add(new Node(((double)64 + Math.random() * ((double)1518 - (double)64)),destinationHost));
+				packetQueue.add(new Node(((double)64 + Math.random() * ((double)1518 - (double)64)),destinationHost,tempTime));
 			}
 		}
 	}
