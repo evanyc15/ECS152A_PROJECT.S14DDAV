@@ -9,11 +9,12 @@ public class Controller {
 	public static void main( String[] args ){
 		double lambda1P1[] = {0.1,0.25,0.4,0.55,0.65,0.80,0.90};
 		double lambda2P1[] = {0.2,0.4,0.6,0.8,0.9};
-		int iterationsP2[] = {1,10,25,50,100,500,10000,100000};
+		int iterationsP2[] = {1,10,50,1000};
 		double lambdaP2[] = {0.01,0.05,0.1,0.2,0.3,0.5,0.6,0.7,0.8,0.9};
 		int hostNumsP2[] = {10,25};
 		double mu = 1.0;
 		int[] MAXBUFFER = {-1,1,20,50}; //-1 means infinite
+		Statistics stats = new Statistics();
 		
 		/*for(int i = 0; i < lambda1P1.length; i++){
 			calculateP1(lambda1P1,MAXBUFFER,mu,i,0);
@@ -26,7 +27,9 @@ public class Controller {
 		for(int i = 0; i < iterationsP2.length; i ++){
 			for(int j = 0; j < hostNumsP2.length; j++){
 				for(int k = 0; k < lambdaP2.length; k++){
-					calculateP2(iterationsP2[i],hostNumsP2[j],lambdaP2[k]);
+					//System.out.print("\n"+negative_exponentially_distributed_time(lambdaP2[k])+" of lambda: "+lambdaP2[k] + " random of: "+(Math.random()*1+0));
+					calculateP2(iterationsP2[i],hostNumsP2[j],lambdaP2[k],stats);
+					System.out.print("Iterations : "+ iterationsP2[i]+", NumHosts: " + hostNumsP2[j]+", Lambda: "+lambdaP2[k]+", Total Average Throughput: "+(stats.getTotalThroughput()/stats.getServerTime())+", Total Delay: "+(stats.getTotalQueueDelay()+stats.getServerTime())+" seconds\n");
 				}
 			}
 		}
@@ -110,34 +113,32 @@ public class Controller {
 		stats.outputStats(lambda[lambdaNum],mu,MAXBUFFER[bufferNum]);
 		//System.out.print("\n" + ParetoDistr(lambda[lambdaNum]) + "\n");
 	}
-	public static void calculateP2(int iterations, int numHosts, double lambda){
+	public static void calculateP2(int iterations, int numHosts, double lambda, Statistics stats){
 		TokenRing tokenRing = new TokenRing(numHosts,lambda);
-		Statistics stats = new Statistics();
-		double serverTime = 0.0;
 		
-		System.out.print("\nProject Phase II with Iterations: "+iterations+", NumHosts: "+numHosts+", Lambda: "+lambda+"\n");
+		//System.out.print("\nProject Phase II with Iterations: "+iterations+", NumHosts: "+numHosts+", Lambda: "+lambda+"\n");
 		
-		serverTime = 10000;
-		//serverTime = negative_exponentially_distributed_time(lambda);
+		stats.setServerTime(75);
+		//serverTime = negative_exponentially_distributed_time(lambda)*5;
 		
-		for(int i = 0; i < iterations; i++ ){
+		for(int i = 0; i < iterations; i++){
 			for(int j = 0; j < numHosts; j++){
 				Hosts currentHost = tokenRing.getHost(j);
 				currentHost.setToken(true);
-				currentHost.setLastTokenPassedTime(serverTime);
+				currentHost.setLastTokenPassedTime(stats.getServerTime());
 				currentHost.retrieveNewPackets();
-				currentHost.setCurrentTime(serverTime);
+				currentHost.setCurrentTime(stats.getServerTime());
 				
 				//System.out.print("Host: "+currentHost.getHostNum()+" has "+currentHost.getQueueSize()+" packets in Queue\n");
 				
 				if(currentHost.getQueueSize() > 0){
 					//Creates frame to move through token ring
 					LinkedList<Node> frame = new LinkedList<Node>();
-					double frameLength = 0.0;
+					stats.setFrameLength(0.0);
 					for(int k = 0; k < currentHost.getQueueSize(); k++){
 						Node tempNode1 = currentHost.removePacket();
 						//This is to find the total size in bytes of frame (not how many packets are in it!!)
-						frameLength += tempNode1.getPacketSize();
+						stats.addFrameLength(tempNode1.getPacketSize());
 						frame.add(tempNode1);
 					}
 					//This is traversing frame through tokenRing
@@ -153,23 +154,26 @@ public class Controller {
 						
 						//System.out.print("Traversing Node: " + traverseHostNum+"\n");
 						
-						serverTime += 0.00001; 
+						stats.addServerTime(0.00001);
 						if(frame.size() > 0){
 							//Computing total Throughput (without dividing server time) of iteration
-							stats.addTotalThroughput(frameLength);
+							stats.addTotalThroughput(stats.getFrameLength());
 							//Transmission delay time
 							
 							//System.out.print("Transmission delay: " + (frameLength/(double)13107200) + "\n");
 							
-							serverTime += frameLength/(double)12500000; 
+							stats.addServerTime((stats.getFrameLength()/(double)12500000));
 							//This loop is traversing the frame to see if any of the packets has a destination for temp2 host
 							for(int k = 0; k < frame.size(); k++){
 								Node tempNode2 = frame.get(k);
+								
+								//System.out.print("Destination Host: "+tempNode2.getDestinationHost()+"\n");
+								
 								if(traverseHostNum == tempNode2.getDestinationHost()){
 									Node tempFrameNode1 = frame.remove(k); //Removes it from frame
-									stats.addTotalQueueDelay(serverTime - tempFrameNode1.getCreationTime());
+									stats.addTotalQueueDelay(stats.getServerTime() - tempFrameNode1.getCreationTime());
 									//Do something here because it matches
-									frameLength -= tempFrameNode1.getPacketSize();
+									stats.subFrameLength(tempFrameNode1.getPacketSize());
 								}
 							}
 						}
@@ -180,7 +184,7 @@ public class Controller {
 							traverseHostNum++;
 						}
 					}
-					serverTime += 0.00001;  //For the last link right before currentHostNum is reached
+					stats.addServerTime(0.00001);  //For the last link right before currentHostNum is reached
 				}
 				else{
 					//Set to false before passing token to next Host
@@ -188,9 +192,6 @@ public class Controller {
 				}
 			}
 		}
-		
-		//THIS IS THE TOTAL DELAY, NOT THE TOTAL AVERAGE DELAY SO NOT SURE IF ITS RIGHT
-		System.out.print("Total Average Throughput: "+(stats.getTotalThroughput()/serverTime)+", Total Delay: "+(stats.getTotalQueueDelay()+serverTime)+" seconds\n");
 	}
 	public static double negative_exponentially_distributed_time(double rate) 
     {

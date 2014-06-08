@@ -64,13 +64,13 @@ public class Hosts {
 	}
 	public void retrieveNewPackets(){
 		double tempTime = this.currentTime;
-		Random rand = new Random();
-		boolean first = true;
+		int destinationHost;
+		
 		while(tempTime <= this.lastTokenPassedTime){
 			tempTime += negative_exponentially_distributed_time(lambda);
 			if(tempTime <= this.lastTokenPassedTime){
+				Random rand = new Random();
 				//Find destination host for each packet
-				int destinationHost;
 				do{
 					destinationHost = rand.nextInt((9-0)+1)+0;
 				}while(destinationHost == this.hostNum);

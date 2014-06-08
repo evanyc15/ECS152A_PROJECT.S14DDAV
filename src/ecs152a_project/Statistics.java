@@ -12,6 +12,8 @@ public class Statistics {
 	private double totalFrameLengths;
 	private double totalThroughput;
 	private double totalQueueDelay;
+	private double serverTime;
+	private double frameLength;
 	
 	public Statistics(){
 		serverBusyTime = 0;
@@ -25,6 +27,29 @@ public class Statistics {
 		totalFrameLengths = 0.0;
 		totalThroughput = 0.0;
 		totalQueueDelay = 0.0;
+		serverTime = 0.0;
+		frameLength = 0.0;
+	}
+	public double getFrameLength() {
+		return frameLength;
+	}
+	public void setFrameLength(double frameLength) {
+		this.frameLength = frameLength;
+	}
+	public void addFrameLength(double frameLength) {
+		this.frameLength += frameLength;
+	}
+	public void subFrameLength(double frameLength) {
+		this.frameLength -= frameLength;
+	}
+	public double getServerTime() {
+		return serverTime;
+	}
+	public void setServerTime(double serverTime) {
+		this.serverTime = serverTime;
+	}
+	public void addServerTime(double serverTime) {
+		this.serverTime += serverTime;
 	}
 	public double getTotalQueueDelay() {
 		return totalQueueDelay;
