@@ -1,3 +1,7 @@
+/*  This is the class for the Node objects which are
+ *  used in the packet queues for the hosts in the token ring.
+ */
+
 package ecs152a_project;
 
 public class Node {

@@ -15,7 +15,8 @@ public class Controller {
 		double mu = 1.0;
 		int[] MAXBUFFER = {-1,1,20,50}; //-1 means infinite
 		Statistics stats = new Statistics();
-		
+
+		// First two for loops are to emulate Phase 1
 		/*for(int i = 0; i < lambda1P1.length; i++){
 			calculateP1(lambda1P1,MAXBUFFER,mu,i,0);
 		}
@@ -24,6 +25,7 @@ public class Controller {
 				calculateP1(lambda2P1,MAXBUFFER,mu,i,j);
 			}
 		}*/
+		// Phase 2
 		for(int i = 0; i < iterationsP2.length; i ++){
 			for(int j = 0; j < hostNumsP2.length; j++){
 				for(int k = 0; k < lambdaP2.length; k++){

@@ -1,3 +1,9 @@
+/*  This class keeps track of all the statistics/data throughout the simulation.
+ *  For Phase II, data that we are looking for is throughput (number of bytes transmitted per unit time, equation = # bytes transmitted/ entire simulation time)
+ *  and average packet delay which is the delay including queueing delay and transmission delay for each  host and propagation delay between hosts. Propagation delay
+ *  was 10 microseconds and channel transmission rate is 100 Mbps.
+ */
+
 package ecs152a_project;
 
 public class Statistics {

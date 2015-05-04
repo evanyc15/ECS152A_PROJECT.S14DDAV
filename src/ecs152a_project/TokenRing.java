@@ -1,3 +1,6 @@
+/*  This is the class for the Token Ring object.
+ */
+
 package ecs152a_project;
 
 import java.util.List;

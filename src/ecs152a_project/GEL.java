@@ -1,3 +1,9 @@
+/*  The GEL is the Global Event List. This is a double
+ *  linked list which holds all the events. It also
+ *  maintains the events in ascending order of time.
+ *  GEL is only used in Phase 1
+ */
+
 package ecs152a_project;
 
 import java.util.List;
@@ -11,15 +17,11 @@ public class GEL{
 	GEL(){
 		GelList = new LinkedList<Events>();
 	}
+    // Insert new event into the GEL. Call sorting function to maintain ascending order
 	public void insert(Events event){
 		
 		GelList.add(event);
 		Collections.sort(GelList,new EventsComp());
-	}
-	public Events removeFirst(){
-		Events firstEvent;
-		firstEvent = GelList.removeFirst();
-		return firstEvent;
 	}
 	public Events getNode(int index){
 		return GelList.get(index);
